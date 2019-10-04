@@ -1,0 +1,61 @@
+# Note: there are many handy hints in comments in this example -- remove them when you've finalized your recipe
+
+# Jinja variables help maintain the recipe as you'll update the version only here.
+# Using the name variable with the URL in line 14 is convenient
+# when copying and pasting from another recipe, but not really needed.
+{% set name = "megnet" %}
+{% set version = "1.0.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 9d86f5367f96290d6668b36623f8db6d6eceeed24a6ed2a3fee2cfba6a9c0f55
+  # sha256 is the preferred checksum -- you can get it for a file with:
+  #  `openssl sha256 <file name>`.
+  # You may need the openssl package, available on conda-forge:
+  #  `conda install openssl -c conda-forge``
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  build:
+    # If your project compiles code (such as a C extension) then add the required compilers as separate entries here.
+    # Compilers are named 'c', 'cxx' and 'fortran'.
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+  run:
+    - python
+
+test:
+  # Some packages might need a `test/commands` key to check CLI.
+  # List all the packages/modules that `run_test.py` imports.
+  imports:
+    - megnet
+    - megnet.models.GraphModel
+
+about:
+  home: https://github.com/materialsvirtuallab/megnet
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.md
+  summary: 'Graph Networks as a Universal Machine Learning Framework for Molecules and Crystals '
+  description: |
+    The MatErials Graph Network (MEGNet) is an implementation of DeepMind's 
+    graph networks for universal machine learning in materials science. See 
+    <http://pubs.acs.org/doi/10.1021/acs.chemmater.9b01294> for benchmarks
+    on prediction errors in a broad array of properties in both molecules and 
+    crystals.
+  doc_url: https://github.com/materialsvirtuallab/megnet/blob/master/README.md
+  dev_url: https://github.com/materialsvirtuallab/megnet
+
+extra:
+  recipe-maintainers:
+    - shyuep
+    - chc273
